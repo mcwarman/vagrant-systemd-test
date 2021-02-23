@@ -1,0 +1,13 @@
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'docker'
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "docker" do |d|
+    d.image = "mcwarman/vagrant-provider:ubuntu-focal-systemd"
+    d.has_ssh = true
+    d.privileged = true
+    d.create_args = ["-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro"]
+  end
+
+  config.vm.network "forwarded_port", guest: 80, host: 80
+  config.vm.provision "shell", path: "provision.sh", name: "packages"
+end
